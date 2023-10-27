@@ -1,10 +1,12 @@
 package jpabook.jpashop;
 
+import jpabook.jpashop.domaiin.Member;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +18,11 @@ public class MemberRepositoryTest {
 
     @Test
     @Transactional // (주의) JPA의 SQL 수행시점은 트랜잭션의 커밋시점이므로 트랜잭션이 없으면 에러가 발생한다.
+    @Rollback(false)
     public void testMember() throws Exception {
         //given
         Member member = new Member();
-        member.setUsername("memberA");
+        member.setName("memberA");
 
         //when
         Long saveId = memberRepository.save(member);
@@ -27,7 +30,9 @@ public class MemberRepositoryTest {
 
         //then
         Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+        Assertions.assertThat(findMember.getName()).isEqualTo(member.getName());
+        Assertions.assertThat(findMember).isEqualTo(member);
+        System.out.println("findMember = member : " + (findMember == member));
 
     }
 
