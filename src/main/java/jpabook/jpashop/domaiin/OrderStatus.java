@@ -1,7 +1,4 @@
-package jpabook.jpashop.domaiin;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+package jpabook.jpashop.domain;
 
 public enum OrderStatus {
     ORDER, CANCEL
