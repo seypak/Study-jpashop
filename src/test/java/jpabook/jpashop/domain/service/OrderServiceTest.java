@@ -7,14 +7,20 @@ import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.domain.exception.NotEnoughStockException;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.repository.OrderRepository;
+import jpabook.jpashop.domain.repository.OrderSearch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -87,6 +93,25 @@ public class OrderServiceTest {
 
         assertEquals("주문취소시 주문상태는 CANCEL", OrderStatus.CANCEL, order.getStatus());
         assertEquals("주문취소시 재고상태는 원복", 10, book.getStockQuantity());
+    }
+
+    @Test
+    public void 주문검색조회() throws Exception {
+        //given
+        Member member = getMember();
+        Book book = getBook("JPA북", 10000, 10);
+        int orderCount = 2;
+        orderService.order(member.getId(), book.getId(), orderCount);
+
+        OrderSearch orderSearch = new OrderSearch();
+        orderSearch.setOrderStatus(OrderStatus.ORDER);
+        orderSearch.setMemberName("회원1");
+
+        //when
+        List<Order> orders = orderService.findOrders(orderSearch);
+
+        //then
+        assertFalse("주문 조회 정상확인", CollectionUtils.isEmpty(orders));
     }
 
     private Book getBook(String name, int price, int stockQuantity) {
