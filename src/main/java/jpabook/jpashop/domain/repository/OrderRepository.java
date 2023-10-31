@@ -1,8 +1,11 @@
 package jpabook.jpashop.domain.repository;
 
-import jpabook.jpashop.domain.Member;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -103,4 +106,27 @@ public class OrderRepository {
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대 1000건
         return query.getResultList();
     }
+
+    /**
+     * 3. JPA QueryDSL
+     * => 강좌에서는 JPQL, Criteria 두가지만 설명하고 querydsl은 별도로 강의한다고 하여
+     * 개인적으로 gradle 설정과 querydsl을 사용해보았다.
+     * 좀 더 추가 리팩토링 해야할 것으로 보인다.
+     * ( Q객체 생성원리, JPAQueryFactory를 인스턴스화할 수 있는방법, 파라미터 별도 Exception처리 등 )
+     */
+    public List<Order> findAllByQueryDsl(OrderSearch orderSearch) {
+        JPAQueryFactory jpf = new JPAQueryFactory(em);
+        QOrder qOrder = QOrder.order;
+        QMember qMember = QMember.member;
+
+        return jpf.query()
+                .select(qOrder)
+                .from(qOrder)
+                .join(qOrder.member, qMember)
+                .where(qOrder.status.eq(orderSearch.getOrderStatus())
+                        , qMember.name.like(orderSearch.getMemberName())
+                ).limit(1000)
+                .fetch();
+    }
+
 }
