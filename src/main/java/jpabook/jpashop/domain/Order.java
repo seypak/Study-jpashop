@@ -1,6 +1,8 @@
 package jpabook.jpashop.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.bytebuddy.asm.Advice;
 
@@ -14,6 +16,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     @Id @GeneratedValue
@@ -35,6 +38,14 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문상태 [ ORDER, CANCEL ]
+
+    /**
+     * 생성자를 protected 로 선언하는것까지 JPA 에서 지원해주고,
+     * protected 로 선언하면 외부에서 new Order()로 객체를 조작할 수 없도록 제약을 걸어줄 수 있다.
+     * 해당 생성자는 @NoArgsConstructor(access = AccessLevel.PROTECTED) 로 대체할 수 있다.
+     */
+//    protected Order() {
+//    }
 
     //== 연관관계 메서드 ==//
     public void setMember(Member member) {
