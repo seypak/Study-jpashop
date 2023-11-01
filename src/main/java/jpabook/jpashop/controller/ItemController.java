@@ -23,14 +23,14 @@ public class ItemController {
     }
 
     @PostMapping("/items/new")
-    public String create(BookForm bookForm) {
+    public String create(BookForm form) {
 
-        Book book = new Book();
-        book.setName(bookForm.getName());
-        book.setPrice(bookForm.getPrice());
-        book.setStockQuantity(bookForm.getStockQuantity());
-        book.setAuthor(bookForm.getAuthor());
-        book.setIsbn(bookForm.getIsbn());
+        /**
+         * Order에서 본 것처럼 Static 생성자 메소드를 가지고 의도에 맞게 사용하게 하는 게 제일 좋다.
+         * 초기에 생성했던 테스트코드때문에 생성자를 막지는 않았다.
+         * 필요하다면 @NoArgsConstructor(access = AccessLevel.PROTECTED)도 추가할 것.
+         */
+        Book book = Book.createBook(form.getName(), form.getPrice(), form.getStockQuantity(), form.getAuthor(), form.getIsbn());
 
         itemService.saveItem(book);
 
