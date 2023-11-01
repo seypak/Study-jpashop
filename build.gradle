@@ -28,6 +28,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
 
+	// Validation 스프링 공식문서에서 2.3이상부턴 validation 을 지원하지 않아 직접 디펜던시 걸어줘야합니다.
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	// QueryDSL JPA 라이브러리
 	implementation 'com.querydsl:querydsl-jpa:5.0.0'
 	// QueryDSL 관련된 쿼리 타입(QClass)을 생성할 때 필요한 라이브러리로, annotationProcessor을 사용하여 추가
